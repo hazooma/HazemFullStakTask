@@ -1,9 +1,7 @@
 require("dotenv").config();
 
 const TRESHHOLD = process.env.TRESH_HOLD || 100000000;
-
-console.log(TRESHHOLD);
-
+const TIMERANGE = process.env.TIME_RANGE || 500000;
 const locations_To_Segments = function(locations) {
   let segments = [];
   let startdate = locations[0].time;
@@ -20,11 +18,21 @@ const locations_To_Segments = function(locations) {
       startdate = element.time;
     }
   }
-  console.log(currentsegment.length);
   if (currentsegment.length > 0) {
     segments.push({ locations: currentsegment, segmentNumber: segment });
   }
   return segments;
 };
 
+const locationsInRange = function(locations, date) {
+  let locationsRange = [];
+  for (let index = 0; index < locations.length; index++) {
+    const element = locations[index];
+    if (Math.abs(new Date(date) - new Date(element.time)) <= TIMERANGE) {
+      locationsRange.push(element);
+    }
+  }
+  return locationsRange;
+};
 module.exports.locations_To_Segments = locations_To_Segments;
+module.exports.locationsInRange = locationsInRange;
