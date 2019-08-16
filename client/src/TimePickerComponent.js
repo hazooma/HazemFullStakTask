@@ -1,7 +1,7 @@
 import React from "react";
 
 import PickyDateTime from "react-picky-date-time";
-export default class YourOwnComponent extends React.Component {
+export default class DatePicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -10,6 +10,7 @@ const getRouteSummary = locations => {
   );
   return `${from} - ${to}`;
 };
+let polylines = [];
 
 const MapComponent = props => {
   const map = useRef();
@@ -49,21 +50,26 @@ const MapComponent = props => {
       return; // If map or locations not loaded yet.
     }
 
+    if (polylines.length > 0) {
+      polylines.forEach(pl => {
+        map.current.remove(pl);
+      });
+      polylines = [];
+    }
     locations.forEach(segment => {
       // TODO(Task 1): Replace the single red polyline by the different segments on the map.
       const latlons = segment.locations.map(({ lat, lon }) => [lat, lon]);
-      console.log(segment);
       const polyline = L.polyline(latlons, {
         color: colors[segment.segmentNumber] || "black"
       })
         .bindPopup(getRouteSummary(segment.locations))
         .addTo(map.current);
+      polylines.push(polyline);
       map.current.fitBounds(polyline.getBounds());
     });
 
-    return () => map.current.remove(polyline);
+    return () => map.current;
   }, [locations, map.current]);
-  // TODO(Task 2): Display location that the back-end returned on the map as a marker.
 
   return (
     <div>
